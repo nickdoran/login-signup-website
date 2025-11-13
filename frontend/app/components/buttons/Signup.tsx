@@ -4,7 +4,7 @@ const Signup = () => {
     return (
         <Link
             href={""}
-            className="px-2 py-1 text-[#1a1a1a] bg-[#dfdfdf] rounded-xl text-lg font-semibold"
+            className="px-2 py-1 text-[#1a1a1a] bg-[#dfdfdf] rounded-xl text-md font-semibold"
         >
             Sign Up
         </Link>
