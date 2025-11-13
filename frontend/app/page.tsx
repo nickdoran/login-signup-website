@@ -1,3 +1,9 @@
+import WelcomeMessage from "./WelcomeMessage";
+
 export default function Home() {
-    return <p>hello world</p>;
+    return (
+        <div className="flex-1 flex justify-center items-center text-white">
+            <WelcomeMessage></WelcomeMessage>
+        </div>
+    );
 }
