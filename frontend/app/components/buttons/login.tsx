@@ -5,7 +5,7 @@ const Login = () => {
     return (
         <Link
             href={""}
-            className="px-2 py-1 text-[#939393] rounded-xl text-lg font-semibold"
+            className="px-2 py-1 text-[#939393] rounded-xl text-md font-semibold"
         >
             Log In
         </Link>
