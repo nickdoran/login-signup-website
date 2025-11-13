@@ -1,11 +1,11 @@
 import React from "react";
 
-const footer = () => {
+const Footer = () => {
     return (
-        <div className="w-full h-7 bg-slate-400">
-            <p className="bg-slate-100">This is a footer</p>
+        <div className="w-full h-10 bg-[#161616] flex items-center justify-center">
+            <p className="text-[#979797] text-center">This is a footer</p>
         </div>
     );
 };
 
-export default footer;
+export default Footer;
