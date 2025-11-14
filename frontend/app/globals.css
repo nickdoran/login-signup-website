@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+@layer base {
+    body {
+        color: white;
+    }
+    input:focus {
+        outline: none;
+    }
+}
+
+.fadeInMoveUp {
+    position: relative;
+    animation: fadeInMoveUpAnimation 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0s 1
+        forwards;
+}
+
+@keyframes fadeInMoveUpAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
