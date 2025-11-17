@@ -3,6 +3,7 @@ import { useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import { login, signup } from "../services/authServices";
 
 interface AuthFormProps {
     mode: string;
@@ -17,6 +18,8 @@ const AuthForm = ({ mode }: AuthFormProps) => {
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState("");
     const [emailTouched, setEmailTouched] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,6 +46,7 @@ const AuthForm = ({ mode }: AuthFormProps) => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError("");
 
         // Validate email one more time on submit
         if (email && !validateEmail(email)) {
@@ -51,17 +55,25 @@ const AuthForm = ({ mode }: AuthFormProps) => {
             return;
         }
 
-        // Prepare data to send to backend
-        const formData = {
-            ...(isLogin ? {} : { name }), // Only include name for signup
-            email,
-            password,
-        };
+        setIsLoading(true);
 
-        console.log("Submitting to backend:", formData);
-
-        // TODO: Send to your backend API
-        router.push("/");
+        try {
+            if (isLogin) {
+                // Call login API
+                const response = await login(email, password);
+                console.log("Login successful:", response);
+                router.push("/");
+            } else {
+                // Call signup API
+                const response = await signup(name, email, password);
+                console.log("Signup successful:", response);
+                router.push("/");
+            }
+        } catch (error) {
+            console.log("could not fetch:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -75,6 +87,12 @@ const AuthForm = ({ mode }: AuthFormProps) => {
                     ? "Log into your account"
                     : "Sign up for a new account"}
             </h1>
+
+            {error && (
+                <div className="w-full bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded mb-4">
+                    {error}
+                </div>
+            )}
 
             <form
                 onSubmit={handleSubmit}
