@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { login, signup } from "../services/authServices";
-
+import { toast } from "sonner";
 interface AuthFormProps {
     mode: string;
 }
@@ -62,15 +62,36 @@ const AuthForm = ({ mode }: AuthFormProps) => {
                 // Call login API
                 const response = await login(email, password);
                 console.log("Login successful:", response);
+                toast("Log In Successful!", {
+                    style: {
+                        background: "green",
+                        color: "white",
+                        border: "3px solid #1d1d1d",
+                    },
+                });
                 router.push("/");
             } else {
                 // Call signup API
                 const response = await signup(name, email, password);
                 console.log("Signup successful:", response);
+                toast("Sign Up Successful!", {
+                    style: {
+                        background: "green",
+                        color: "white",
+                        border: "3px solid #1d1d1d",
+                    },
+                });
                 router.push("/");
             }
         } catch (error) {
             console.log("could not fetch:", error);
+            toast("Invalid Email or Password!", {
+                style: {
+                    background: "red",
+                    color: "white",
+                    border: "3px solid #1d1d1d",
+                },
+            });
         } finally {
             setIsLoading(false);
         }
