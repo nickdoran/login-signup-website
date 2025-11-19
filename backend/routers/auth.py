@@ -31,8 +31,7 @@ def signup(user: UserSignup,response: Response, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/login", response_model=LoginResponse)
-def login(user: UserLogin, db: Session = Depends(get_db)):
-    """Login and validate credentials"""
+def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
     try:
         db_user = authenticate_user(db, user.email, user.password)
         if not db_user:
@@ -41,7 +40,16 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
                 detail="Invalid email or password",
             )
         
-        # Return success with user data (no session/token)
+        access_token = create_jwt_token({"sub": user.email})
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            secure=False,
+            samesite="lax",
+            max_age=3600
+        )
+        
         return {
             "success": True,
             "message": "Login successful",
