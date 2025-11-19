@@ -14,7 +14,7 @@ def create_user(db: Session, user: UserSignup):
     # Create new user with hashed password
     db_user = User(
         name=user.name,
-        email=user.email,
+        email=user.email.lower(),
         hashed_password=hash_password(user.password)
     )
     db.add(db_user)
@@ -23,7 +23,6 @@ def create_user(db: Session, user: UserSignup):
     return db_user
 
 def authenticate_user(db: Session, email: str, password: str):
-    """Authenticate user by email and password"""
     user = db.query(User).filter(User.email == email).first()
     if not user:
         return None
