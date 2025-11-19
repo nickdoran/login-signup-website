@@ -1,16 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from sqlalchemy.orm import Session
 from database import get_db
 from schemas.user import UserSignup, UserLogin, LoginResponse, UserResponse
 from services.auth_service import create_user, authenticate_user
+from utils.jwt_utils import create_jwt_token, verify_jwt_token
+from models.user import User
+
 
 router = APIRouter()
 
 @router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def signup(user: UserSignup, db: Session = Depends(get_db)):
-    """Register a new user"""
+def signup(user: UserSignup,response: Response, db: Session = Depends(get_db)):
     try:
-        return create_user(db, user)
+        user = create_user(db, user)
+        access_token = create_jwt_token({"sub": user.email})
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            secure=False,
+            samesite="lax",
+            max_age=3600
+        )
+        return user;    
+
     except HTTPException:
         raise
     except Exception as e:
