@@ -21,6 +21,7 @@ def signup(user: UserSignup,response: Response, db: Session = Depends(get_db)):
             secure=False,
             samesite="lax",
             max_age=3600
+
         )
         return user;    
 
@@ -60,3 +61,31 @@ def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
     except Exception as e:
         print(f"Login error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/me", response_model=UserResponse)
+def get_me(request: Request, db: Session = Depends(get_db)):
+    
+    token = request.cookies.get("access_token")
+    
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    user = verify_jwt_token(token, db)
+    
+    return user
+        
+
+
+
+@router.post("/logout")
+def logout(response: Response):
+    """Clear the access token cookie to log out the user"""
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=False,
+        samesite="lax"
+    )
+    return {"success": True, "message": "Logged out successfully"}
+
