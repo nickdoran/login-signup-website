@@ -85,10 +85,10 @@ const AuthForm = ({ mode }: AuthFormProps) => {
             }
         } catch (error) {
             console.log("could not fetch:", error);
-            
+
             // Extract error message
             const errorMessage = error instanceof Error ? error.message : "An error occurred";
-            
+
             // Show specific toast based on error type
             if (errorMessage.includes("Email already registered")) {
                 toast("This email is already registered!", {
