@@ -23,7 +23,7 @@ def signup(user: UserSignup,response: Response, db: Session = Depends(get_db)):
             max_age=3600
 
         )
-        return user;    
+        return user;
 
     except HTTPException:
         raise
@@ -40,7 +40,7 @@ def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid email or password",
             )
-        
+
         access_token = create_jwt_token({"sub": user.email})
         response.set_cookie(
             key="access_token",
@@ -50,7 +50,7 @@ def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
             samesite="lax",
             max_age=3600
         )
-        
+
         return {
             "success": True,
             "message": "Login successful",
@@ -65,16 +65,16 @@ def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 def get_me(request: Request, db: Session = Depends(get_db)):
-    
+
     token = request.cookies.get("access_token")
-    
+
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    
+
     user = verify_jwt_token(token, db)
-    
+
     return user
-        
+
 
 
 
