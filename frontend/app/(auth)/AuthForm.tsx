@@ -85,13 +85,36 @@ const AuthForm = ({ mode }: AuthFormProps) => {
             }
         } catch (error) {
             console.log("could not fetch:", error);
-            toast("Invalid Email or Password!", {
-                style: {
-                    background: "red",
-                    color: "white",
-                    border: "3px solid #1d1d1d",
-                },
-            });
+            
+            // Extract error message
+            const errorMessage = error instanceof Error ? error.message : "An error occurred";
+            
+            // Show specific toast based on error type
+            if (errorMessage.includes("Email already registered")) {
+                toast("This email is already registered!", {
+                    style: {
+                        background: "red",
+                        color: "white",
+                        border: "3px solid #1d1d1d",
+                    },
+                });
+            } else if (errorMessage.includes("Invalid email or password")) {
+                toast("Invalid Email or Password!", {
+                    style: {
+                        background: "red",
+                        color: "white",
+                        border: "3px solid #1d1d1d",
+                    },
+                });
+            } else {
+                toast(errorMessage, {
+                    style: {
+                        background: "red",
+                        color: "white",
+                        border: "3px solid #1d1d1d",
+                    },
+                });
+            }
         } finally {
             setIsLoading(false);
         }
